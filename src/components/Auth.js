@@ -1,11 +1,16 @@
 import { useState, useRef } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store/auth";
 
 const Auth = () => {
+  const history = useHistory();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmRef = useRef();
 
+  const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
 
   const switchAuth = () => {
@@ -46,7 +51,9 @@ const Auth = () => {
 
         throw new Error(errorMessage);
       }
+      dispatch(authActions.login(data.idToken));
       localStorage.setItem("token", data.idToken);
+      history.replace("/home");
     } catch (error) {
       alert(error);
     }
