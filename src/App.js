@@ -1,5 +1,7 @@
-function App() {
-  return <h1>App</h1>;
-}
+import Auth from "./components/Auth";
+
+const App = () => {
+  return <Auth />;
+};
 
 export default App;
