@@ -53,6 +53,7 @@ const Auth = () => {
       }
       dispatch(authActions.login(data.idToken));
       localStorage.setItem("token", data.idToken);
+      localStorage.setItem("email", data.email);
       history.replace("/home");
     } catch (error) {
       alert(error);
