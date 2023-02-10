@@ -14,17 +14,23 @@ const Header = () => {
   };
 
   return (
-    <Navbar bg="light" expand="md">
+    <Navbar bg="success" expand="md" sticky="top">
       <Container fluid className="px-5">
-        <Navbar.Brand href="/">MAIL BOX</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Link to="/" className="navbar-brand text-white">
+          MAIL BOX
+        </Link>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="bg-white" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Link to="/home" className="nav-link">
+            <Link to="/home" className="nav-link text-white">
               Home
             </Link>
             {isLoggedIn && (
-              <Link to="/auth" className="nav-link" onClick={logoutHandler}>
+              <Link
+                to="/auth"
+                className="nav-link text-white"
+                onClick={logoutHandler}
+              >
                 Logout
               </Link>
             )}

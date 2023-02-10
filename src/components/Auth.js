@@ -80,13 +80,13 @@ const Auth = () => {
                 <Form.Control type="password" required ref={confirmRef} />
               </Form.Group>
             )}
-            <Button variant="info" type="submit" className="col-4 offset-4">
+            <Button variant="success" type="submit" className="col-4 offset-4">
               {isLogin ? "Login" : "Sign Up"}
             </Button>
           </Form>
           <Button
-            variant="secondary"
-            className="col-8 offset-2"
+            variant="white"
+            className="col-8 offset-2 text-success"
             onClick={switchAuth}
           >
             {isLogin

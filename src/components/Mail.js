@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import draftToHtml from "draftjs-to-html";
 
 const Mail = () => {
   const emailRef = useRef();
@@ -13,7 +14,7 @@ const Mail = () => {
   const [convertedContent, setConvertedContent] = useState(null);
 
   useEffect(() => {
-    let data = convertToRaw(editorState.getCurrentContent());
+    let data = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     setConvertedContent(data);
   }, [editorState]);
 
@@ -62,7 +63,7 @@ const Mail = () => {
           editorState={editorState}
           toolbarClassName="border p-1 bg-light"
           wrapperClassName=""
-          editorClassName="border p-3 vh-100"
+          editorClassName="border p-3 min-vh-100"
           onEditorStateChange={setEditorState}
           toolbar={{
             options: [
@@ -79,7 +80,7 @@ const Mail = () => {
             },
           }}
         />
-        <Button variant="info" type="submit" className="col-4 offset-4 mt-3">
+        <Button variant="success" type="submit" className="col-4 offset-4 mt-3">
           Send
         </Button>
       </Form>
