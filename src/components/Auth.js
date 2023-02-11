@@ -64,20 +64,38 @@ const Auth = () => {
     <Container className="p-5">
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
-          <Form className="border p-3 mb-3" onSubmit={submitHandler}>
+          <Form
+            className="border border-success p-3 mb-3"
+            onSubmit={submitHandler}
+          >
             <h3 className="text-center">{isLogin ? "LOGIN" : "SIGN UP"}</h3>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" required ref={emailRef} />
+              <Form.Control
+                type="email"
+                required
+                ref={emailRef}
+                className="border-success"
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" required ref={passwordRef} />
+              <Form.Control
+                type="password"
+                required
+                ref={passwordRef}
+                className="border-success"
+              />
             </Form.Group>
             {!isLogin && (
               <Form.Group className="mb-3" controlId="confirmPassword">
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control type="password" required ref={confirmRef} />
+                <Form.Control
+                  type="password"
+                  required
+                  ref={confirmRef}
+                  className="border-success"
+                />
               </Form.Group>
             )}
             <Button variant="success" type="submit" className="col-4 offset-4">

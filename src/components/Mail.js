@@ -33,6 +33,7 @@ const Mail = () => {
             receiver: emailRef.current.value,
             subject: subjectRef.current.value,
             mailContent: convertedContent,
+            read: false,
           }),
         }
       );
@@ -49,21 +50,31 @@ const Mail = () => {
   };
 
   return (
-    <Container className="border mb-5">
+    <Container className="border border-success mb-5">
       <Form className="p-3 mb-3" onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>To</Form.Label>
-          <Form.Control type="email" required ref={emailRef} />
+          <Form.Control
+            type="email"
+            required
+            ref={emailRef}
+            className="border-success"
+          />
         </Form.Group>
         <Form.Group className="mb-3" controlId="subject">
           <Form.Label>Subject</Form.Label>
-          <Form.Control type="text" required ref={subjectRef} />
+          <Form.Control
+            type="text"
+            required
+            ref={subjectRef}
+            className="border-success"
+          />
         </Form.Group>
         <Editor
           editorState={editorState}
-          toolbarClassName="border p-1 bg-light"
+          toolbarClassName="border border-success p-1 bg-light"
           wrapperClassName=""
-          editorClassName="border p-3 min-vh-100"
+          editorClassName="border border-success p-3 min-vh-100"
           onEditorStateChange={setEditorState}
           toolbar={{
             options: [

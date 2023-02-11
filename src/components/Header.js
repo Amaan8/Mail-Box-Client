@@ -14,7 +14,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar bg="success" expand="md" sticky="top">
+    <Navbar bg="success" expand="sm" sticky="top">
       <Container fluid className="px-5">
         <Link to="/" className="navbar-brand text-white">
           MAIL BOX
