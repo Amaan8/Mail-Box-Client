@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { emailActions } from "../store/email";
 import Mail from "./Mail";
 import Inbox from "./Inbox";
+import Sent from "./Sent";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -28,15 +29,23 @@ const Home = () => {
               Inbox ({unreadCount})
             </Button>
           </NavLink>
+          <NavLink to="/home/sent">
+            <Button variant="outline-success" className="mt-2 w-100">
+              Sent
+            </Button>
+          </NavLink>
         </Col>
         <Col className="border-start min-vh-100">
           <h1 className="p-5 text-center">Welcome to your mail box</h1>
           <Switch>
+            <Route path="/home/mail">
+              <Mail />
+            </Route>
             <Route path="/home/inbox">
               <Inbox />
             </Route>
-            <Route path="/home/mail">
-              <Mail />
+            <Route path="/home/sent">
+              <Sent />
             </Route>
           </Switch>
         </Col>

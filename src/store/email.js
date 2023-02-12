@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const email = localStorage.getItem("email");
-
 const initialState = {
   emails: {},
   unreadCount: 0,
@@ -18,6 +16,7 @@ const emailSlice = createSlice({
       state.emails[action.payload].read = true;
     },
     addCount(state) {
+      const email = localStorage.getItem("email");
       state.unreadCount = 0;
       if (state.emails) {
         Object.values(state.emails)
