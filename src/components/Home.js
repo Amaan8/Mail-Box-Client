@@ -1,11 +1,18 @@
+import { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { NavLink, Switch, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { emailActions } from "../store/email";
 import Mail from "./Mail";
 import Inbox from "./Inbox";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const unreadCount = useSelector((state) => state.email.unreadCount);
+
+  useEffect(() => {
+    dispatch(emailActions.addCount());
+  }, [dispatch]);
 
   return (
     <Container fluid>

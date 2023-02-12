@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, ListGroup, CloseButton } from "react-bootstrap";
+import { Container, ListGroup, CloseButton, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { emailActions } from "../store/email";
 
@@ -67,12 +67,33 @@ const Inbox = () => {
   const showEmail = (mail) => {
     setInbox(mail);
 
-    dispatch(emailActions.removeCount(mail));
     dispatch(emailActions.readed(mail));
+    dispatch(emailActions.addCount());
   };
 
   const closeEmail = (mail) => {
     setInbox("");
+  };
+
+  const deleteMail = async (mail) => {
+    try {
+      const response = await fetch(
+        `https://mail-box-client-20205-default-rtdb.firebaseio.com/emails/${mail}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        let errorMessage = data.error.message;
+
+        throw new Error(errorMessage);
+      }
+      console.log(data);
+    } catch (error) {
+      alert(error);
+    }
+    getMails();
   };
 
   return (
@@ -92,20 +113,25 @@ const Inbox = () => {
               Object.keys(emails)
                 .filter((mail) => emails[mail].receiver === email)
                 .map((mail) => (
-                  <ListGroup.Item
-                    key={mail}
-                    className="d-flex align-items-center border-success"
-                    action
-                    onClick={() => showEmail(mail)}
-                  >
-                    {!emails[mail].read && (
-                      <span className="badge bg-success me-2"> </span>
-                    )}
-                    <span className="col">From: {emails[mail].sender}</span>
-                    <span className="col text-center">
-                      {emails[mail].subject}
-                    </span>
-                  </ListGroup.Item>
+                  <div key={mail} className="d-flex mb-1">
+                    <ListGroup.Item
+                      className="d-flex align-items-center border-success rounded"
+                      action
+                      onClick={() => showEmail(mail)}
+                    >
+                      {!emails[mail].read && (
+                        <span className="badge bg-success me-2"> </span>
+                      )}
+                      {emails[mail].read && <span className="me-4"> </span>}
+                      <span>From: {emails[mail].sender}</span>
+                      <span className="col text-center ps-2">
+                        {emails[mail].subject}
+                      </span>
+                    </ListGroup.Item>
+                    <Button variant="success" onClick={() => deleteMail(mail)}>
+                      Delete
+                    </Button>
+                  </div>
                 ))}
           </ListGroup>
         </Container>

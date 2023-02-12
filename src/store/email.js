@@ -18,12 +18,12 @@ const emailSlice = createSlice({
       state.emails[action.payload].read = true;
     },
     addCount(state) {
-      Object.values(state.emails)
-        .filter((mail) => mail.receiver === email)
-        .map((mail) => !mail.read && state.unreadCount++);
-    },
-    removeCount(state, action) {
-      if (!state.emails[action.payload].read) state.unreadCount--;
+      state.unreadCount = 0;
+      if (state.emails) {
+        Object.values(state.emails)
+          .filter((mail) => mail.receiver === email)
+          .map((mail) => !mail.read && state.unreadCount++);
+      }
     },
   },
 });
