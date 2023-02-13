@@ -13,7 +13,7 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           {!isLoggedIn && <Redirect to="/auth" />}
-          {isLoggedIn && <Redirect to="/home" />}
+          {isLoggedIn && <Redirect to="/home/inbox" />}
         </Route>
         {!isLoggedIn && (
           <Route path="/auth">

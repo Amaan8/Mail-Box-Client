@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Container, ListGroup, CloseButton, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { emailActions } from "../store/email";
@@ -14,42 +14,20 @@ const Inbox = () => {
     emails = {};
   }
 
-  useEffect(() => {
-    getMails();
-    // eslint-disable-next-line
-  }, []);
+  // useEffect(() => {
+  //   updateEmails();
+  //   // eslint-disable-next-line
+  // }, [emails]);
 
-  useEffect(() => {
-    updateEmails();
-    // eslint-disable-next-line
-  }, [emails]);
-
-  const getMails = async () => {
+  const updateEmails = async (mail) => {
     try {
       const response = await fetch(
-        "https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json"
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        let errorMessage = data.error.message;
-
-        throw new Error(errorMessage);
-      }
-      dispatch(emailActions.setEmails(data));
-      dispatch(emailActions.addCount());
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const updateEmails = async () => {
-    try {
-      const response = await fetch(
-        `https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json`,
+        `https://mail-box-client-20205-default-rtdb.firebaseio.com/emails/${mail}.json`,
         {
           method: "PUT",
           body: JSON.stringify({
-            ...emails,
+            ...emails[mail],
+            read: true,
           }),
         }
       );
@@ -67,11 +45,12 @@ const Inbox = () => {
   const showEmail = (mail) => {
     setInbox(mail);
 
+    updateEmails(mail);
     dispatch(emailActions.readed(mail));
     dispatch(emailActions.addCount());
   };
 
-  const closeEmail = (mail) => {
+  const closeEmail = () => {
     setInbox("");
   };
 
@@ -93,7 +72,6 @@ const Inbox = () => {
     } catch (error) {
       alert(error);
     }
-    getMails();
   };
 
   return (
