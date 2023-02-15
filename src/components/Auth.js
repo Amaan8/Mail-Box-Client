@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";
+import useHttp from "../hooks/useHttp";
 
 const Auth = () => {
   const history = useHistory();
@@ -13,51 +14,51 @@ const Auth = () => {
   const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
 
+  const sendRequest = useHttp();
+
   const switchAuth = () => {
     setIsLogin((prevState) => !prevState);
   };
 
-  const submitHandler = async (e) => {
+  const setAuth = (data) => {
+    dispatch(authActions.login(data.idToken));
+    localStorage.setItem("token", data.idToken);
+    localStorage.setItem("email", data.email);
+
+    history.replace("/home/inbox");
+  };
+
+  const submitHandler = (e) => {
     e.preventDefault();
 
-    try {
-      const email = emailRef.current.value;
-      const password = passwordRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
 
-      let url;
-      if (isLogin) {
-        url =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCthslolJCc2T3-kwOkZaUxLS_eGLVeytM";
-      } else {
-        const confirm = confirmRef.current.value;
-        if (password !== confirm) {
-          throw new Error("Password did not match");
-        }
-        url =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCthslolJCc2T3-kwOkZaUxLS_eGLVeytM";
+    let url;
+    if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCthslolJCc2T3-kwOkZaUxLS_eGLVeytM";
+    } else {
+      const confirm = confirmRef.current.value;
+      if (password !== confirm) {
+        throw new Error("Password did not match");
       }
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCthslolJCc2T3-kwOkZaUxLS_eGLVeytM";
+    }
 
-      const response = await fetch(url, {
+    sendRequest(
+      {
+        url: url,
         method: "POST",
-        body: JSON.stringify({
+        body: {
           email: email,
           password: password,
           returnSecureToken: true,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        let errorMessage = data.error.message;
-
-        throw new Error(errorMessage);
-      }
-      dispatch(authActions.login(data.idToken));
-      localStorage.setItem("token", data.idToken);
-      localStorage.setItem("email", data.email);
-      history.replace("/home/inbox");
-    } catch (error) {
-      alert(error);
-    }
+        },
+      },
+      setAuth
+    );
   };
 
   return (

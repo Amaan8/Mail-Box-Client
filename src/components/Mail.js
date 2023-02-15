@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Container, Form, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
+import { emailActions } from "../store/email";
+import useHttp from "../hooks/useHttp";
 
 const Mail = () => {
+  const dispatch = useDispatch();
   const emailRef = useRef();
   const subjectRef = useRef();
 
@@ -13,40 +17,42 @@ const Mail = () => {
   );
   const [convertedContent, setConvertedContent] = useState(null);
 
+  const sendRequest = useHttp();
+
   useEffect(() => {
     let data = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     setConvertedContent(data);
   }, [editorState]);
 
-  const submitHandler = async (e) => {
+  const addMail = (mailData, responseData) => {
+    const id = responseData.name;
+    const mail = { id: id, ...mailData };
+    dispatch(emailActions.addEmail(mail));
+  };
+
+  const submitHandler = (e) => {
     e.preventDefault();
 
     const sender = localStorage.getItem("email");
+    const date = new Date();
 
-    try {
-      const response = await fetch(
-        "https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            sender: sender,
-            receiver: emailRef.current.value,
-            subject: subjectRef.current.value,
-            mailContent: convertedContent,
-            read: false,
-          }),
-        }
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        let errorMessage = data.error.message;
+    const mailData = {
+      sender: sender,
+      receiver: emailRef.current.value,
+      subject: subjectRef.current.value,
+      mailContent: convertedContent,
+      date: date.toLocaleDateString(),
+      read: false,
+    };
 
-        throw new Error(errorMessage);
-      }
-      console.log(data);
-    } catch (error) {
-      alert(error);
-    }
+    sendRequest(
+      {
+        url: "https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json",
+        method: "POST",
+        body: mailData,
+      },
+      addMail.bind(null, mailData)
+    );
   };
 
   return (

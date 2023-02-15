@@ -7,33 +7,46 @@ import Sidebar from "./Sidebar";
 import Mail from "./Mail";
 import Inbox from "./Inbox";
 import Sent from "./Sent";
+import useHttp from "../hooks/useHttp";
 
 const Home = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getMails = async () => {
-      try {
-        const response = await fetch(
-          "https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json"
-        );
-        const data = await response.json();
-        if (!response.ok) {
-          let errorMessage = data.error.message;
+  const sendRequest = useHttp();
 
-          throw new Error(errorMessage);
+  useEffect(() => {
+    const getMails = () => {
+      const setMails = (data) => {
+        const emails = [];
+        for (const mail in data) {
+          emails.push({
+            id: mail,
+            sender: data[mail].sender,
+            receiver: data[mail].receiver,
+            subject: data[mail].subject,
+            mailContent: data[mail].mailContent,
+            date: data[mail].date,
+            read: data[mail].read,
+          });
         }
-        dispatch(emailActions.setEmails(data));
+
+        dispatch(emailActions.setEmails(emails));
         dispatch(emailActions.addCount());
-      } catch (error) {
-        alert(error);
-      }
+      };
+
+      sendRequest(
+        {
+          url: "https://mail-box-client-20205-default-rtdb.firebaseio.com/emails.json",
+        },
+        setMails
+      );
     };
-    let id = setInterval(getMails, 2000);
+
+    let id = setInterval(getMails, 1000);
     return () => {
       clearInterval(id);
     };
-  }, [dispatch]);
+  }, [sendRequest, dispatch]);
 
   return (
     <Container fluid>
